@@ -97,6 +97,22 @@ def create_actual_price_container():
         style={'font-size': '120%', 'width': '33%', 'display': 'inline-block', 'text-align': 'center', 'padding': '10px', 'height': '450px',
                'border-left': '1px solid black', 'border-bottom': '1px solid black'})
 
+
+
+# Initialize the app
+df, df18h, encoded_image = load_data()
+app = dash.Dash(__name__)
+app.layout = create_layout(encoded_image)
+
+@app.callback(
+    [Output('graph', 'figure'),
+     Output('stats', 'children'),
+     Output('stats24h', 'children'),
+     Output('Actual_price', 'children')],
+    [Input('date-range', 'start_date'),
+     Input('date-range', 'end_date'),
+     Input('hour-range', 'value'),
+     ])
 # Main function to update data
 def update_data(start_date, end_date, hour_range):
     # Vérifier si la plage de dates a été sélectionnée
@@ -182,22 +198,6 @@ def update_data(start_date, end_date, hour_range):
         ], style={'marginTop':'50px'})
     Actual_price=html.P(f"{df['prix'].iloc[-1]} $")
     return fig, stats, stats24h, Actual_price
-
-# Initialize the app
-df, df18h, encoded_image = load_data()
-app = dash.Dash(__name__)
-app.layout = create_layout(encoded_image)
-
-@app.callback(
-    [Output('graph', 'figure'),
-     Output('stats', 'children'),
-     Output('stats24h', 'children'),
-     Output('Actual_price', 'children')],
-    [Input('date-range', 'start_date'),
-     Input('date-range', 'end_date'),
-     Input('hour-range', 'value'),
-     ])
-
 # Run the server
 if __name__ == '__main__':
-    app.run_server(host='0.0.0.0', port=8050, debug=True)
+    app.run_server( port=8050, debug=True)
